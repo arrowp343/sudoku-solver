@@ -45,9 +45,12 @@ class Sudoku_Solver:
 
 
 
-        #tbd: zuweisen der vorgegebenen werte
-
-
+        # zuweisen der vorgegebenen werte
+        for i, row in enumerate(sudoku.array):
+            for j, cell in enumerate(row):
+                if cell != " ":
+                    solver.add_clause([x_zsw[i][j][cell-1]])
+        
 
         # example:
         # solver.add_clause([-1, 2])  # (-1 OR 2)
@@ -59,15 +62,12 @@ class Sudoku_Solver:
 
         if solution:
             print("SAT")
-            output = [[0 for _ in range(sudoku.size)] for _ in range(sudoku.size)]
+            finished_sudoku_string = ""
             for a in range(sudoku.size):
                 for b in range(sudoku.size):
                     for c in range(sudoku.size):
                         if model[x_zsw[a][b][c] - 1] > 0:
-                            output[a][b] = str(c + 1)
-
-            #tbd: output in sudoku-objekt überführen und printen
-            print("Aktualisiertes Array:", output)
-
+                            finished_sudoku_string += str(c + 1)
+            finished_sudoku = Sudoku(finished_sudoku_string)
         else:
             print("UNSAT")

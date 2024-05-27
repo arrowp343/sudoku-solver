@@ -22,7 +22,6 @@ def get_param():
 def main():
     input_string = get_param()
     sudoku = Sudoku(input_string)
-    sudoku.print()
 
     s_solver = Sudoku_Solver()
     s_solver.solve(sudoku)
