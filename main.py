@@ -1,9 +1,10 @@
 import sys
 from Sudoku import *
+from Sudoku_Solver import *
 
 def get_param():
 
-    #return "....6.9...2...8.3...53....7...5....9..1.7....3....25..5....3.4...7.1.6...8.4....."
+    return "....6.9...2...8.3...53....7...5....9..1.7....3....25..5....3.4...7.1.6...8.4....."
 
     if len(sys.argv) != 2:
         print("Missing Argument!")
@@ -22,6 +23,9 @@ def main():
     input_string = get_param()
     sudoku = Sudoku(input_string)
     sudoku.print()
+
+    s_solver = Sudoku_Solver()
+    s_solver.solve(sudoku)
 
 if __name__ == "__main__":
     main()

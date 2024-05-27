@@ -1,6 +1,9 @@
 class Sudoku:
+
+    size = 9
+
     def __init__(self, input_string):
-        self.array = [[0 for _ in range(9)] for _ in range(9)]
+        self.array = [[0 for _ in range(self.size)] for _ in range(self.size)]
         self.init_values(input_string)
         self.print()
 
@@ -24,4 +27,3 @@ class Sudoku:
             row_display = "| " + " | ".join(f"{cell if cell != 0 else ' '}" for cell in row) + " |"
             print(row_display)
         print(hl)
-        
