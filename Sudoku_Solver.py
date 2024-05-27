@@ -26,20 +26,25 @@ class Sudoku_Solver:
             for cell in row:
                 solver.add_clause(cell)
 
-
         # jeder wert darf in jeder zeile nur einmal vorkommen:
+        print("jeder wert darf in jeder zeile nur einmal vorkommen:")
+        for w in range(sudoku.size):
+            for row in range(sudoku.size):
+                for i in range(sudoku.size):
+                    #print(i+1)
+                    for j in range(i+1, sudoku.size):
+                        #print(f"compare: {i+1}-{j+1}")
+                        solver.add_clause([-x_zsw[row][i][w], -x_zsw[row][j][w]])
 
-        for w in range(9):
-            for row in x_zsw:    
-                for i, cell_i in enumerate(row):
-                    #print(i)
-                    for j, cell_j in enumerate(row[i+1:]):
-                        #print(f"compare cell{i+1} with cell {j+i+2}")
-                        solver.add_clause([-cell_i[w], -cell_j[w]])
-
-        #tbd: jeder wert darf in jeder spalte nur einmal vorkommen
-
-
+        # jeder wert darf in jeder spalte nur einmal vorkommen
+        print("jeder wert darf in jeder spalte nur einmal vorkommen")
+        for w in range(sudoku.size):
+            for column in range(sudoku.size):
+                for i in range(sudoku.size):
+                    #print(i+1)
+                    for j in range(i+1, sudoku.size):
+                        #print(f"compare {i+1}-{j+1}")
+                        solver.add_clause([-x_zsw[i][column][w], -x_zsw[j][column][w]])
 
         #tbd: jeder wert darf in jedem block nur einmal vorkommen
 
