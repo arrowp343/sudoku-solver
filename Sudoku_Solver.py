@@ -46,9 +46,24 @@ class Sudoku_Solver:
                         #print(f"compare {i+1}-{j+1}")
                         solver.add_clause([-x_zsw[i][column][w], -x_zsw[j][column][w]])
 
-        #tbd: jeder wert darf in jedem block nur einmal vorkommen
-
-
+        # jeder wert darf in jedem block nur einmal vorkommen
+        print("jeder wert darf in jedem block nur einmal vorkommen")
+        for w in range(sudoku.size):
+            for b_row in range(3):          # 3 block-reihen
+                for b_block in range(3):   # 3 block-spalten
+                    #print(f"block: {b_row}_{b_block}")
+                    list_of_elemements_in_block = []
+                    #list_of_elemements_in_block_as_int_tupel = [] 
+                    for row in range(sudoku.N):
+                        for column in range(sudoku.N):
+                            #list_of_elemements_in_block_as_int_tupel.append((b_row * sudoku.N + row + 1, b_block * sudoku.N + column + 1))
+                            list_of_elemements_in_block.append(x_zsw[b_row * sudoku.N + row][b_block * sudoku.N + column][w])
+                    #print(list_of_elemements_in_block_as_int_tupel)
+                    for i in range(sudoku.size):
+                        #print(f"element{i}")
+                        for j in range(i+1, sudoku.size):
+                            #print(f"compare {list_of_elemements_in_block_as_int_tupel[i]}-{list_of_elemements_in_block_as_int_tupel[j]}")
+                            solver.add_clause([-list_of_elemements_in_block[i], -list_of_elemements_in_block[j]])
 
         # zuweisen der vorgegebenen werte
         for i, row in enumerate(sudoku.array):
@@ -56,11 +71,6 @@ class Sudoku_Solver:
                 if cell != " ":
                     solver.add_clause([x_zsw[i][j][cell-1]])
         
-
-        # example:
-        # solver.add_clause([-1, 2])  # (-1 OR 2)
-        # solver.add_clause([-2, 3])  # (-2 OR 3)
-        # solver.add_clause([-3, 1])  # (-3 OR 1)
 
         solution = solver.solve()
         model = solver.get_model()

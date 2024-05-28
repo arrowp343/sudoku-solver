@@ -1,6 +1,7 @@
 class Sudoku:
 
-    size = 9
+    N = 3
+    size = N**2
 
     def __init__(self, input_string):
         self.array = [[0 for _ in range(self.size)] for _ in range(self.size)]
