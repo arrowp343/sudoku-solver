@@ -1,11 +1,13 @@
 from pysat.solvers import Solver
 from Sudoku import *
+import time
 
 class Sudoku_Solver:
     def __init__(self):
         pass
 
     def solve(self, sudoku: Sudoku):
+        start_time = time.time()
         solver = Solver()
 
         # 3-dimensionale Matrix der Aussagenlogischen Variablen X_(z,s,w)
@@ -88,3 +90,7 @@ class Sudoku_Solver:
             finished_sudoku = Sudoku(sudoku.size, finished_sudoku_string)
         else:
             print("UNSAT")
+
+        finished_time = time.time()
+        diff_time = finished_time - start_time
+        print(f"Processing Time: {diff_time} Seconds")
