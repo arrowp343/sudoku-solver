@@ -8,7 +8,6 @@ class Sudoku_Solver:
     def solve(self, sudoku: Sudoku):
         solver = Solver()
 
-
         # 3-dimensionale Matrix der Aussagenlogischen Variablen X_(z,s,w)
         x_zsw = []
 
@@ -16,8 +15,8 @@ class Sudoku_Solver:
             row_variables = []
             for s in range(sudoku.size):    # für jede zelle ( spalte in einer zeile )
                 cell_variables = []
-                for w in range(9):          # für jeden wert, den eine Zelle annehmen kann
-                    cell_variables.append((z * sudoku.size + s) * 9 + w + 1)
+                for w in range(sudoku.size):          # für jeden wert, den eine Zelle annehmen kann
+                    cell_variables.append((z * sudoku.size + s) * sudoku.size + w + 1)
                 row_variables.append(cell_variables)
             x_zsw.append(row_variables)
 
@@ -54,10 +53,10 @@ class Sudoku_Solver:
                     #print(f"block: {b_row}_{b_block}")
                     list_of_elemements_in_block = []
                     #list_of_elemements_in_block_as_int_tupel = [] 
-                    for row in range(sudoku.N):
-                        for column in range(sudoku.N):
-                            #list_of_elemements_in_block_as_int_tupel.append((b_row * sudoku.N + row + 1, b_block * sudoku.N + column + 1))
-                            list_of_elemements_in_block.append(x_zsw[b_row * sudoku.N + row][b_block * sudoku.N + column][w])
+                    for row in range(sudoku.block_size):
+                        for column in range(sudoku.block_size):
+                            #list_of_elemements_in_block_as_int_tupel.append((b_row * sudoku.block_size + row + 1, b_block * sudoku.block_size + column + 1))
+                            list_of_elemements_in_block.append(x_zsw[b_row * sudoku.block_size + row][b_block * sudoku.block_size + column][w])
                     #print(list_of_elemements_in_block_as_int_tupel)
                     for i in range(sudoku.size):
                         #print(f"element{i}")
@@ -82,7 +81,10 @@ class Sudoku_Solver:
                 for b in range(sudoku.size):
                     for c in range(sudoku.size):
                         if model[x_zsw[a][b][c] - 1] > 0:
-                            finished_sudoku_string += str(c + 1)
-            finished_sudoku = Sudoku(finished_sudoku_string)
+                            value = c + 1
+                            if value > 9:
+                                value = chr(value - 10 + ord('A'))
+                            finished_sudoku_string += str(value)
+            finished_sudoku = Sudoku(sudoku.size, finished_sudoku_string)
         else:
             print("UNSAT")

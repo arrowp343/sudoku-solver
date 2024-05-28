@@ -1,31 +1,21 @@
 import sys
 from Sudoku import *
 from Sudoku_Solver import *
-
-def get_param():
-
-    return "....6.9...2...8.3...53....7...5....9..1.7....3....25..5....3.4...7.1.6...8.4....."
-
-    if len(sys.argv) != 2:
-        print("Missing Argument!")
+    
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("Argument Error! Arguments required: <N (size of sudoku)> <sudoku string (with length N**2)>")
         sys.exit(1)
 
-    param = sys.argv[1]
+    N = int(sys.argv[1])
+    sudoku_string = sys.argv[2]
 
-    if len(param) != 9**2:
-        print(f"Error: The input must be exactly 81 characters long. (actual length: {str(len(param))} )")
-        sys.exit(1)
+    #sudoku_string = "....6.9...2...8.3...53....7...5....9..1.7....3....25..5....3.4...7.1.6...8.4....."
+    #N = 9
 
-    print(f"Received parameter: {param}")
-    return param
-
-def main():
-    input_string = get_param()
-    sudoku = Sudoku(input_string)
+    sudoku = Sudoku(N, sudoku_string)
 
     s_solver = Sudoku_Solver()
     s_solver.solve(sudoku)
 
-if __name__ == "__main__":
-    main()
-
+    sys.exit(0)
