@@ -8,10 +8,13 @@ class Sudoku_Solver:
 
     def solve(self, sudoku: Sudoku):
         start_time = time.time()
-        solver = Solver()
+        solver = Solver(name="g4")
+
+        clauses = []
 
         # 3-dimensionale Matrix der Aussagenlogischen Variablen X_(z,s,w)
         x_zsw = []
+        len_x_zsw = 0
 
         for z in range(sudoku.size):        # für jede zeile
             row_variables = []
@@ -19,6 +22,7 @@ class Sudoku_Solver:
                 cell_variables = []
                 for w in range(sudoku.size):          # für jeden wert, den eine Zelle annehmen kann
                     cell_variables.append((z * sudoku.size + s) * sudoku.size + w + 1)
+                    len_x_zsw += 1
                 row_variables.append(cell_variables)
             x_zsw.append(row_variables)
 
@@ -36,6 +40,7 @@ class Sudoku_Solver:
                     for j in range(i+1, sudoku.size):
                         #print(f"compare: {i+1}-{j+1}")
                         solver.add_clause([-x_zsw[row][i][w], -x_zsw[row][j][w]])
+                        clauses.append([-x_zsw[row][i][w], -x_zsw[row][j][w]])
 
         # jeder wert darf in jeder spalte nur einmal vorkommen
         print("jeder wert darf in jeder spalte nur einmal vorkommen")
@@ -46,6 +51,7 @@ class Sudoku_Solver:
                     for j in range(i+1, sudoku.size):
                         #print(f"compare {i+1}-{j+1}")
                         solver.add_clause([-x_zsw[i][column][w], -x_zsw[j][column][w]])
+                        clauses.append([-x_zsw[i][column][w], -x_zsw[j][column][w]])
 
         # jeder wert darf in jedem block nur einmal vorkommen
         print("jeder wert darf in jedem block nur einmal vorkommen")
@@ -65,17 +71,17 @@ class Sudoku_Solver:
                         for j in range(i+1, sudoku.size):
                             #print(f"compare {list_of_elemements_in_block_as_int_tupel[i]}-{list_of_elemements_in_block_as_int_tupel[j]}")
                             solver.add_clause([-list_of_elemements_in_block[i], -list_of_elemements_in_block[j]])
+                            clauses.append([-list_of_elemements_in_block[i], -list_of_elemements_in_block[j]])
 
         # zuweisen der vorgegebenen werte
         for i, row in enumerate(sudoku.array):
             for j, cell in enumerate(row):
                 if cell != " ":
                     solver.add_clause([x_zsw[i][j][cell-1]])
+                    clauses.append([x_zsw[i][j][cell-1]])
         
-
         solution = solver.solve()
         model = solver.get_model()
-
         if solution:
             print("SAT")
             finished_sudoku_string = ""
@@ -88,9 +94,18 @@ class Sudoku_Solver:
                                 value = chr(value - 10 + ord('A'))
                             finished_sudoku_string += str(value)
             finished_sudoku = Sudoku(sudoku.size, finished_sudoku_string)
+            self.write_dimacs_to_file(clauses, len_x_zsw)
         else:
             print("UNSAT")
 
         finished_time = time.time()
         diff_time = finished_time - start_time
         print(f"Processing Time: {diff_time} Seconds")
+    
+    def write_dimacs_to_file(self, clauses, num_vars):
+        filename = f"dimacs_{time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())}.dimacs.txt"
+        with open(filename, 'w') as file:
+            file.write(f"p cnf {num_vars} {len(clauses)}\n")
+            for clause in clauses:
+                file.write(" ".join(map(str, clause)) + " 0\n")
+
